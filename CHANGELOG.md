@@ -4,6 +4,14 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/pubsub?activeTab=versions
 
+## [3.0.2](https://github.com/googleapis/nodejs-pubsub/compare/v3.0.1...v3.0.2) (2022-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @google-cloud/precise-date to v3 ([#1576](https://github.com/googleapis/nodejs-pubsub/issues/1576)) ([69a5461](https://github.com/googleapis/nodejs-pubsub/commit/69a546160284c290e7025bfe6a307d7309b828c9))
+* **deps:** update dependency @google-cloud/projectify to v3 ([#1584](https://github.com/googleapis/nodejs-pubsub/issues/1584)) ([af4b13e](https://github.com/googleapis/nodejs-pubsub/commit/af4b13e162a8ad9a1c0d5c117afe784ea5824753))
+
 ## [3.0.1](https://github.com/googleapis/nodejs-pubsub/compare/v3.0.0...v3.0.1) (2022-05-30)
 
 
