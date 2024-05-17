@@ -857,6 +857,30 @@ describe('PubSub', () => {
       assert.strictEqual(pubsub.isEmulator, true);
     });
 
+    it('should allow overriding fake cred mode (on)', () => {
+      pubsub!.options!.apiEndpoint = 'something.googleapis.com';
+      pubsub!.options!.emulatorMode = true;
+      pubsub.determineBaseUrl_?.();
+
+      assert.strictEqual(pubsub.options!.sslCreds, fakeCreds);
+      assert.strictEqual(pubsub.isEmulator, true);
+    });
+
+    it('should allow overriding fake cred mode (off)', () => {
+      const defaultBaseUrl_ = 'defaulturl';
+      const testingUrl = 'localhost:8085';
+
+      setHost(defaultBaseUrl_);
+      pubsub!.options!.apiEndpoint = testingUrl;
+      pubsub!.options!.emulatorMode = false;
+      pubsub.determineBaseUrl_?.();
+
+      assert.strictEqual(pubsub.options?.servicePath, 'localhost');
+      assert.strictEqual(pubsub.options.port, 8085);
+      assert.ok(pubsub.options.sslCreds === undefined);
+      assert.strictEqual(pubsub.isEmulator, false);
+    });
+
     it('should remove slashes from the baseUrl', () => {
       setHost('localhost:8080/');
       pubsub.determineBaseUrl_?.();
@@ -1686,7 +1710,7 @@ describe('PubSub', () => {
 
     it('should close the schema client when it has been opened', async () => {
       // Force it to create a client.
-      const client = await pubsub.getSchemaClient_?.();
+      const client = await pubsub.getSchemaClient?.();
       sandbox.stub(client!, 'close').resolves();
       await pubsub.close?.();
     });
@@ -1707,7 +1731,7 @@ describe('PubSub', () => {
       const name = Schema.formatName_(pubsub.projectId!, schemaId);
 
       // Grab the schema client it'll be using so we can stub it.
-      const client = await pubsub.getSchemaClient_!();
+      const client = await pubsub.getSchemaClient!();
       const def = defer();
       sandbox.stub(client, 'createSchema').callsFake(req => {
         assert.strictEqual(req.parent, pubsub.name);
@@ -1726,7 +1750,7 @@ describe('PubSub', () => {
 
     it('calls down to listSchemas correctly', async () => {
       // Grab the schema client it'll be using so we can stub it.
-      const client = await pubsub.getSchemaClient_!();
+      const client = await pubsub.getSchemaClient!();
 
       sandbox.stub(client, 'listSchemasAsync').callsFake((req, gaxOpts) => {
         assert.strictEqual(req!.parent, pubsub.name);
@@ -1754,7 +1778,7 @@ describe('PubSub', () => {
 
     it('defaults to BASIC for listSchemas', async () => {
       // Grab the schema client it'll be using so we can stub it.
-      const client = await pubsub.getSchemaClient_?.();
+      const client = await pubsub.getSchemaClient?.();
 
       sandbox.stub(client!, 'listSchemasAsync').callsFake(req => {
         assert.strictEqual(req!.view, 'BASIC');
@@ -1777,7 +1801,7 @@ describe('PubSub', () => {
     });
 
     it('calls validateSchema() on the client when validateSchema() is called', async () => {
-      const client = await pubsub.getSchemaClient_!();
+      const client = await pubsub.getSchemaClient!();
       const ischema: ISchema = {
         name: 'test',
         type: SchemaTypes.Avro,

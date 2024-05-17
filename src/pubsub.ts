@@ -70,6 +70,21 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface ClientConfig extends gax.GrpcClientOptions {
   apiEndpoint?: string;
+
+  /**
+   * Configures the emulator mode behaviour:
+   * - If false, disable emulator mode always
+   * - If true, enable emulator mode always
+   * - If unset, use heuristics to decide
+   * Emulator mode notably sets insecure SSL authentication so that you can
+   * try the library out without needing a cert.
+   *
+   * Also notably, if a TPC universeDomain is set, then this will be counted
+   * as !emulatorMode for the purposes of the heuristics. If you want emulator
+   * mode but with a TPC universe domain set, set this to true as well.
+   */
+  emulatorMode?: boolean;
+
   servicePath?: string;
   port?: string | number;
   sslCreds?: gax.grpc.ChannelCredentials;
@@ -400,7 +415,7 @@ export class PubSub {
       },
     };
 
-    const client = await this.getSchemaClient_();
+    const client = await this.getSchemaClient();
     await client.createSchema(request, gaxOpts);
     return new Schema(this, schemaName);
   }
@@ -798,9 +813,16 @@ export class PubSub {
     // If this looks like a GCP URL of some kind, don't go into emulator
     // mode. Otherwise, supply a fake SSL provider so a real cert isn't
     // required for running the emulator.
+    //
+    // Note that users can provide their own URL here, especially with
+    // TPC, so the emulatorMode flag lets them override this behaviour.
     const officialUrlMatch =
-      this.options.servicePath!.endsWith('.googleapis.com');
-    if (!officialUrlMatch) {
+      this.options.servicePath!.endsWith('.googleapis.com') ||
+      this.options.universeDomain;
+    if (
+      (!officialUrlMatch && this.options.emulatorMode !== false) ||
+      this.options.emulatorMode === true
+    ) {
       const grpcInstance = this.options.grpc || gax.grpc;
       this.options.sslCreds = grpcInstance.credentials.createInsecure();
       this.isEmulator = true;
@@ -841,7 +863,7 @@ export class PubSub {
     view: SchemaView = SchemaViews.Basic,
     options?: CallOptions
   ): AsyncIterable<google.pubsub.v1.ISchema> {
-    const client = await this.getSchemaClient_();
+    const client = await this.getSchemaClient();
     const query = {
       parent: this.name,
       view,
@@ -1218,10 +1240,12 @@ export class PubSub {
   }
 
   /**
-   * Gets a schema client, creating one if needed.
-   * @private
+   * Gets a schema client, creating one if needed. This is a shortcut for
+   * `new v1.SchemaServiceClient(await pubsub.getClientConfig())`.
+   *
+   * @returns {Promise<SchemaServiceClient>}
    */
-  async getSchemaClient_(): Promise<SchemaServiceClient> {
+  async getSchemaClient(): Promise<SchemaServiceClient> {
     if (!this.schemaClient) {
       const options = await this.getClientConfig();
       this.schemaClient = new v1.SchemaServiceClient(options);
@@ -1450,7 +1474,7 @@ export class PubSub {
    * @returns {Promise<void>}
    */
   async validateSchema(schema: ISchema, gaxOpts?: CallOptions): Promise<void> {
-    const client = await this.getSchemaClient_();
+    const client = await this.getSchemaClient();
     await client.validateSchema(
       {
         parent: this.name,

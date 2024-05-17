@@ -4,6 +4,88 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/pubsub?activeTab=versions
 
+## [4.4.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.3.3...v4.4.0) (2024-05-03)
+
+
+### Features
+
+* Add several fields to manage state of database encryption update ([#1904](https://github.com/googleapis/nodejs-pubsub/issues/1904)) ([aba9aee](https://github.com/googleapis/nodejs-pubsub/commit/aba9aee0c8ecc840c150aa077892b7bb88f18eca))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency @types/long to v5 ([#1901](https://github.com/googleapis/nodejs-pubsub/issues/1901)) ([d13d395](https://github.com/googleapis/nodejs-pubsub/commit/d13d395341efacf926a126bf756873922f6bbab7))
+
+## [4.3.3](https://github.com/googleapis/nodejs-pubsub/compare/v4.3.2...v4.3.3) (2024-03-03)
+
+
+### Bug Fixes
+
+* Add client library version to headers ([#1891](https://github.com/googleapis/nodejs-pubsub/issues/1891)) ([6b59195](https://github.com/googleapis/nodejs-pubsub/commit/6b59195aed8b6c6576e50512aeca9123ad0cc016))
+
+## [4.3.2](https://github.com/googleapis/nodejs-pubsub/compare/v4.3.1...v4.3.2) (2024-02-13)
+
+
+### Bug Fixes
+
+* Update minimum google-gax versions for auth fixes ([#1888](https://github.com/googleapis/nodejs-pubsub/issues/1888)) ([08acade](https://github.com/googleapis/nodejs-pubsub/commit/08acadee042c6a3b85344575d5d0be09ae6e4202))
+
+## [4.3.1](https://github.com/googleapis/nodejs-pubsub/compare/v4.3.0...v4.3.1) (2024-02-08)
+
+
+### Bug Fixes
+
+* Add option to manually control emulator auth handling, and fix heuristics for TPC ([#1861](https://github.com/googleapis/nodejs-pubsub/issues/1861)) ([761cdc8](https://github.com/googleapis/nodejs-pubsub/commit/761cdc898c69715e6775d2f5913ead1fca2def02))
+
+## [4.3.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.2.0...v4.3.0) (2024-02-05)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter ([#1878](https://github.com/googleapis/nodejs-pubsub/issues/1878)) ([d89fd1d](https://github.com/googleapis/nodejs-pubsub/commit/d89fd1d90b352f0cc7a50a72c5fec4aab6660f8f))
+
+
+### Bug Fixes
+
+* Updated google-gax required for TPC ([#1882](https://github.com/googleapis/nodejs-pubsub/issues/1882)) ([1445856](https://github.com/googleapis/nodejs-pubsub/commit/144585699595b97f1a4cc28551e45fe23305f480))
+
+## [4.2.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.1.1...v4.2.0) (2024-02-01)
+
+
+### Features
+
+* Add enforce_in_transit fields and optional annotations ([#1873](https://github.com/googleapis/nodejs-pubsub/issues/1873)) ([09fc424](https://github.com/googleapis/nodejs-pubsub/commit/09fc4241c8782d2f60c1a78dda316628eca5f751))
+* Add schema revision samples ([#1870](https://github.com/googleapis/nodejs-pubsub/issues/1870)) ([044e149](https://github.com/googleapis/nodejs-pubsub/commit/044e1494d82fd64010f7c6f872982d659e753499))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency @opentelemetry/semantic-conventions to ~1.20.0 ([#1871](https://github.com/googleapis/nodejs-pubsub/issues/1871)) ([2ee0dba](https://github.com/googleapis/nodejs-pubsub/commit/2ee0dba67e6d66d9a678796de6172bcafd28796b))
+* **deps:** Update dependency @opentelemetry/semantic-conventions to ~1.21.0 ([#1876](https://github.com/googleapis/nodejs-pubsub/issues/1876)) ([0fe61a9](https://github.com/googleapis/nodejs-pubsub/commit/0fe61a95b3bfc21bd1a5176c7fbd7f822ece5a5c))
+
+## [4.1.1](https://github.com/googleapis/nodejs-pubsub/compare/v4.1.0...v4.1.1) (2024-01-05)
+
+
+### Bug Fixes
+
+* Correct long audio synthesis HTTP binding ([#1867](https://github.com/googleapis/nodejs-pubsub/issues/1867)) ([65940a4](https://github.com/googleapis/nodejs-pubsub/commit/65940a40fe8f2301690d26f769571a198f747dd3))
+* **deps:** Update dependency @opentelemetry/semantic-conventions to ~1.19.0 ([#1862](https://github.com/googleapis/nodejs-pubsub/issues/1862)) ([92259f5](https://github.com/googleapis/nodejs-pubsub/commit/92259f5bffee05036f1746990b021299ea3ea4e7))
+
+## [4.1.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.0.7...v4.1.0) (2023-12-04)
+
+
+### Features
+
+* Add `use_table_schema` field to BigQueryConfig ([#1858](https://github.com/googleapis/nodejs-pubsub/issues/1858)) ([2875d83](https://github.com/googleapis/nodejs-pubsub/commit/2875d8383831563e5b748e96094faa94bf25fc15))
+
+## [4.0.7](https://github.com/googleapis/nodejs-pubsub/compare/v4.0.6...v4.0.7) (2023-11-09)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency @opentelemetry/semantic-conventions to ~1.18.0 ([#1852](https://github.com/googleapis/nodejs-pubsub/issues/1852)) ([d9a0432](https://github.com/googleapis/nodejs-pubsub/commit/d9a0432a37c6d741c9694a5bcff047f4c85b2feb))
+* Set x-goog-request-params for streaming pull request ([#1849](https://github.com/googleapis/nodejs-pubsub/issues/1849)) ([7b82ff0](https://github.com/googleapis/nodejs-pubsub/commit/7b82ff01e5c654b3e339dfdec5b3da8bf45da049))
+
 ## [4.0.6](https://github.com/googleapis/nodejs-pubsub/compare/v4.0.5...v4.0.6) (2023-09-15)
 
 
