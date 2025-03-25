@@ -28,12 +28,14 @@ guides.
   * [Create Push Subscription](#create-push-subscription)
   * [Create Push Subscription With No Wrapper](#create-push-subscription-with-no-wrapper)
   * [Create Subscription](#create-subscription)
+  * [Create a Cloud Storage subscription](#create-a-cloud-storage-subscription)
   * [Create Subscription With Dead Letter Policy](#create-subscription-with-dead-letter-policy)
   * [Create an exactly-once delivery subscription](#create-an-exactly-once-delivery-subscription)
   * [Create Subscription With Filtering](#create-subscription-with-filtering)
   * [Create Subscription with ordering enabled](#create-subscription-with-ordering-enabled)
   * [Create Subscription With Retry Policy](#create-subscription-with-retry-policy)
   * [Create Topic](#create-topic)
+  * [Create Topic With Cloud Storage Ingestion](#create-topic-with-cloud-storage-ingestion)
   * [Create Topic With Kinesis Ingestion](#create-topic-with-kinesis-ingestion)
   * [Create Topic With Schema](#create-topic-with-schema)
   * [Create Topic With Schema Revisions](#create-topic-with-schema-revisions)
@@ -59,8 +61,9 @@ guides.
   * [Listen with exactly-once delivery](#listen-with-exactly-once-delivery)
   * [Listen For Protobuf Messages](#listen-for-protobuf-messages)
   * [Listen For Messages With Custom Attributes](#listen-for-messages-with-custom-attributes)
+  * [Subscribe with OpenTelemetry Tracing](#subscribe-with-opentelemetry-tracing)
   * [Modify Push Configuration](#modify-push-configuration)
-  * [OpenTelemetry Tracing](#opentelemetry-tracing)
+  * [Optimistic Subscribe](#optimistic-subscribe)
   * [Publish Avro Records to a Topic](#publish-avro-records-to-a-topic)
   * [Publish Batched Messages](#publish-batched-messages)
   * [Publish Message](#publish-message)
@@ -68,6 +71,7 @@ guides.
   * [Publish Ordered Message](#publish-ordered-message)
   * [Publish Protobuf Messages to a Topic](#publish-protobuf-messages-to-a-topic)
   * [Publish with flow control](#publish-with-flow-control)
+  * [Publish with OpenTelemetry Tracing](#publish-with-opentelemetry-tracing)
   * [Publish With Retry Settings](#publish-with-retry-settings)
   * [Quickstart](#quickstart)
   * [Remove Dead Letter Policy](#remove-dead-letter-policy)
@@ -207,7 +211,7 @@ View the [source code](https://github.com/googleapis/nodejs-pubsub/blob/main/sam
 __Usage:__
 
 
-`node createPushSubscription.js <topic-name-or-id> <subscription-name-or-id>`
+`node createPushSubscription.js <endpoint-url> <topic-name-or-id> <subscription-name-or-id>`
 
 
 -----
@@ -226,7 +230,7 @@ View the [source code](https://github.com/googleapis/nodejs-pubsub/blob/main/sam
 __Usage:__
 
 
-`node createPushSubscriptionNoWrapper.js <topic-name-or-id> <subscription-name-or-id>`
+`node createPushSubscriptionNoWrapper.js <endpoint-url> <topic-name-or-id> <subscription-name-or-id>`
 
 
 -----
@@ -246,6 +250,25 @@ __Usage:__
 
 
 `node createSubscription.js <topic-name-or-id> <subscription-name-or-id>`
+
+
+-----
+
+
+
+
+### Create a Cloud Storage subscription
+
+Demonstrates how to create a subscription with Cloud Storage.
+
+View the [source code](https://github.com/googleapis/nodejs-pubsub/blob/main/samples/createSubscriptionWithCloudStorage.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-pubsub&page=editor&open_in_editor=samples/createSubscriptionWithCloudStorage.js,samples/README.md)
+
+__Usage:__
+
+
+`node createSubscriptionWithCloudStorage.js <topic-name> <subscription-name> <bucket> <filename-prefix> <filename-suffix> <max-duration>`
 
 
 -----
@@ -360,6 +383,25 @@ __Usage:__
 
 
 `node createTopic.js <topic-name-or-id>`
+
+
+-----
+
+
+
+
+### Create Topic With Cloud Storage Ingestion
+
+Creates a new topic, with Cloud Storage ingestion enabled.
+
+View the [source code](https://github.com/googleapis/nodejs-pubsub/blob/main/samples/createTopicWithCloudStorageIngestion.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-pubsub&page=editor&open_in_editor=samples/createTopicWithCloudStorageIngestion.js,samples/README.md)
+
+__Usage:__
+
+
+`node createTopicWithCloudStorageIngestion.js <topic-name> <bucket> <input-format> <text-delimiter> <match-glob> <minimum-object-creation-time>`
 
 
 -----
@@ -842,6 +884,25 @@ __Usage:__
 
 
 
+### Subscribe with OpenTelemetry Tracing
+
+Demonstrates how to enable OpenTelemetry tracing in a subscriber.
+
+View the [source code](https://github.com/googleapis/nodejs-pubsub/blob/main/samples/listenWithOpenTelemetryTracing.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-pubsub&page=editor&open_in_editor=samples/listenWithOpenTelemetryTracing.js,samples/README.md)
+
+__Usage:__
+
+
+`node listenWithOpenTelemetryTracing.js <subscription-name-or-id>`
+
+
+-----
+
+
+
+
 ### Modify Push Configuration
 
 Modifies the configuration of an existing push subscription.
@@ -861,18 +922,18 @@ __Usage:__
 
 
 
-### OpenTelemetry Tracing
+### Optimistic Subscribe
 
-Demonstrates how to enable OpenTelemetry tracing in a publisher or subscriber.
+Listens for messages from a subscription, creating it if needed.
 
-View the [source code](https://github.com/googleapis/nodejs-pubsub/blob/main/samples/openTelemetryTracing.js).
+View the [source code](https://github.com/googleapis/nodejs-pubsub/blob/main/samples/optimisticSubscribe.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-pubsub&page=editor&open_in_editor=samples/openTelemetryTracing.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-pubsub&page=editor&open_in_editor=samples/optimisticSubscribe.js,samples/README.md)
 
 __Usage:__
 
 
-`node openTelemetryTracing.js <topic-name-or-id> <subscription-name-or-id>`
+`node optimisticSubscribe.js <subscription-name-or-id> <topic-name-or-id> [timeout-in-seconds]`
 
 
 -----
@@ -1006,6 +1067,25 @@ __Usage:__
 
 
 `node publishWithFlowControl.js <topic-name-or-id>`
+
+
+-----
+
+
+
+
+### Publish with OpenTelemetry Tracing
+
+Demonstrates how to enable OpenTelemetry tracing in a publisher.
+
+View the [source code](https://github.com/googleapis/nodejs-pubsub/blob/main/samples/publishWithOpenTelemetryTracing.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-pubsub&page=editor&open_in_editor=samples/publishWithOpenTelemetryTracing.js,samples/README.md)
+
+__Usage:__
+
+
+`node openTelemetryTracing.js <topic-name-or-id>`
 
 
 -----

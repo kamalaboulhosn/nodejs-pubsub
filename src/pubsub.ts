@@ -58,6 +58,7 @@ import {CallOptions} from 'google-gax';
 import {Transform} from 'stream';
 import {google} from '../protos/protos';
 import {SchemaServiceClient} from './v1';
+import * as tracing from './telemetry-tracing';
 
 /**
  * Project ID placeholder.
@@ -88,6 +89,12 @@ export interface ClientConfig extends gax.GrpcClientOptions {
   servicePath?: string;
   port?: string | number;
   sslCreds?: gax.grpc.ChannelCredentials;
+
+  /**
+   * Enables OpenTelemetry tracing (newer, more full implementation). This
+   * defaults to false/undefined
+   */
+  enableOpenTelemetryTracing?: boolean;
 }
 
 export interface PageOptions {
@@ -307,6 +314,7 @@ export class PubSub {
         allScopes[scope] = true;
       }
     }
+
     this.options = Object.assign(
       {
         libName: 'gccl',
@@ -315,6 +323,11 @@ export class PubSub {
       },
       options
     );
+
+    if (this.options.enableOpenTelemetryTracing) {
+      tracing.setGloballyEnabled(true);
+    }
+
     /**
      * @name PubSub#isEmulator
      * @type {boolean}
@@ -577,16 +590,6 @@ export class PubSub {
         }
         subscription.metadata = resp!;
 
-        // If this is the first call we've made, the projectId might be empty still.
-        if (subscription.name?.includes(PROJECT_ID_PLACEHOLDER)) {
-          if (subscription.metadata && subscription.metadata.name) {
-            subscription.name = Subscription.formatName_(
-              this.projectId,
-              subscription.metadata.name
-            );
-          }
-        }
-
         callback!(null, subscription, resp!);
       }
     );
@@ -681,13 +684,6 @@ export class PubSub {
           return;
         }
         topic.metadata = resp!;
-
-        // If this is the first call we've made, the projectId might be empty still.
-        if (topic.name?.includes(PROJECT_ID_PLACEHOLDER)) {
-          if (topic.metadata && topic.metadata.name) {
-            topic.name = Topic.formatName_(this.projectId, topic.metadata.name);
-          }
-        }
 
         callback!(null, topic, resp!);
       }

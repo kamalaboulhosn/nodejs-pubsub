@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -244,7 +244,7 @@ export class SubscriberClient {
       streamingPull: new this._gaxModule.StreamDescriptor(
         this._gaxModule.StreamType.BIDI_STREAMING,
         !!opts.fallback,
-        /* gaxStreamingRetries: */ false
+        !!opts.gaxServerStreamingRetries
       ),
     };
 
@@ -514,7 +514,7 @@ export class SubscriberClient {
    *   backlog, from the moment a message is published. If `retain_acked_messages`
    *   is true, then this also configures the retention of acknowledged messages,
    *   and thus configures how far back in time a `Seek` can be done. Defaults to
-   *   7 days. Cannot be more than 7 days or less than 10 minutes.
+   *   7 days. Cannot be more than 31 days or less than 10 minutes.
    * @param {number[]} [request.labels]
    *   Optional. See [Creating and managing
    *   labels](https://cloud.google.com/pubsub/docs/labels).
@@ -583,6 +583,9 @@ export class SubscriberClient {
    * @param {google.pubsub.v1.Subscription.State} request.state
    *   Output only. An output-only field indicating whether or not the
    *   subscription can receive messages.
+   * @param {google.pubsub.v1.Subscription.AnalyticsHubSubscriptionInfo} request.analyticsHubSubscriptionInfo
+   *   Output only. Information about the associated Analytics Hub subscription.
+   *   Only set if the subscritpion is created by Analytics Hub.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.

@@ -4,6 +4,92 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/pubsub?activeTab=versions
 
+## [4.10.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.9.0...v4.10.0) (2025-01-13)
+
+
+### Features
+
+* Add Kafka-based sources to IngestionDataSourceSettings proto and IngestionFailureEvent proto ([#2007](https://github.com/googleapis/nodejs-pubsub/issues/2007)) ([08d00a1](https://github.com/googleapis/nodejs-pubsub/commit/08d00a1e7d30e2ab47f7582ff61b1eb73ad9d25e))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency @opentelemetry/semantic-conventions to ~1.28.0 ([#2001](https://github.com/googleapis/nodejs-pubsub/issues/2001)) ([c8e5811](https://github.com/googleapis/nodejs-pubsub/commit/c8e581124523edcac13d6d6c48d67342482959f3))
+
+## [4.9.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.8.0...v4.9.0) (2024-11-12)
+
+
+### Features
+
+* Add IngestionFailureEvent to the external proto ([#1984](https://github.com/googleapis/nodejs-pubsub/issues/1984)) ([7075430](https://github.com/googleapis/nodejs-pubsub/commit/70754309fb600c54d0a573f2d49ad4c419577550))
+
+
+### Bug Fixes
+
+* KiB, not MiB for ack size limits ([#1999](https://github.com/googleapis/nodejs-pubsub/issues/1999)) ([798270d](https://github.com/googleapis/nodejs-pubsub/commit/798270db9c5ef71f75c3e24e70d9592bbd068212))
+
+## [4.8.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.7.2...v4.8.0) (2024-10-15)
+
+
+### Features
+
+* Add ingestion Cloud Storage fields and Platform Logging fields to Topic ([#1974](https://github.com/googleapis/nodejs-pubsub/issues/1974)) ([afec9a1](https://github.com/googleapis/nodejs-pubsub/commit/afec9a1ad3f665a71f08e748623f0fdaa332d17b))
+* Return listing information for subscriptions created via Analytics Hub ([afec9a1](https://github.com/googleapis/nodejs-pubsub/commit/afec9a1ad3f665a71f08e748623f0fdaa332d17b))
+
+## [4.7.2](https://github.com/googleapis/nodejs-pubsub/compare/v4.7.1...v4.7.2) (2024-09-13)
+
+
+### Bug Fixes
+
+* Set MaxBytes for AckQueue ([#1963](https://github.com/googleapis/nodejs-pubsub/issues/1963)) ([5945563](https://github.com/googleapis/nodejs-pubsub/commit/594556315f159f4197ffc0e7249ce1b0339c12ec))
+
+## [4.7.1](https://github.com/googleapis/nodejs-pubsub/compare/v4.7.0...v4.7.1) (2024-08-26)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency @opentelemetry/semantic-conventions to ~1.26.0 ([#1945](https://github.com/googleapis/nodejs-pubsub/issues/1945)) ([f082869](https://github.com/googleapis/nodejs-pubsub/commit/f082869a185c059463654c76c744e44e7b28415e))
+* **deps:** Update dependency protobufjs to ~7.4.0 ([#1959](https://github.com/googleapis/nodejs-pubsub/issues/1959)) ([25946e0](https://github.com/googleapis/nodejs-pubsub/commit/25946e0d4fe794202984cdad6cf48121f72063cf))
+* Propagate set options to LeaseManager (from https://github.com/googleapis/nodejs-pubsub/pull/1880) ([#1954](https://github.com/googleapis/nodejs-pubsub/issues/1954)) ([cdb0916](https://github.com/googleapis/nodejs-pubsub/commit/cdb0916bd30da67f5153c9aead09e7f505954253))
+
+## [4.7.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.6.0...v4.7.0) (2024-08-24)
+
+
+### Features
+
+* Add support for OTel context propagation and harmonized spans ([#1833](https://github.com/googleapis/nodejs-pubsub/issues/1833)) ([4b5c90d](https://github.com/googleapis/nodejs-pubsub/commit/4b5c90dc334e90cefb4da3c6fe9ce027b50aacb8))
+
+## [4.6.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.5.0...v4.6.0) (2024-07-12)
+
+
+### Features
+
+* Add max messages batching for Cloud Storage subscriptions ([#1956](https://github.com/googleapis/nodejs-pubsub/issues/1956)) ([90546f6](https://github.com/googleapis/nodejs-pubsub/commit/90546f634cc4e510185e20a4d1ba1c74ebc59b85))
+* Add use_topic_schema for Cloud Storage Subscriptions ([#1948](https://github.com/googleapis/nodejs-pubsub/issues/1948)) ([120fa1b](https://github.com/googleapis/nodejs-pubsub/commit/120fa1bca0516185e109260c69ea91eb7ddeecd0))
+
+
+### Bug Fixes
+
+* **docs samples:** Update missing argv in sample metadata for push subscription ([#1946](https://github.com/googleapis/nodejs-pubsub/issues/1946)) ([34b8c03](https://github.com/googleapis/nodejs-pubsub/commit/34b8c03f90618ba6ae506764b9d97d9db84dcada))
+
+## [4.5.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.4.1...v4.5.0) (2024-06-11)
+
+
+### Features
+
+* Add service_account_email for export subscriptions ([#1927](https://github.com/googleapis/nodejs-pubsub/issues/1927)) ([c532854](https://github.com/googleapis/nodejs-pubsub/commit/c53285473c2c0973baf5932e52d2d135958c6948))
+
+## [4.4.1](https://github.com/googleapis/nodejs-pubsub/compare/v4.4.0...v4.4.1) (2024-05-30)
+
+
+### Bug Fixes
+
+* An existing message `UpdateVehicleLocationRequest` is removed ([5451d15](https://github.com/googleapis/nodejs-pubsub/commit/5451d150e77d46a475e7a8e150a7f6b5d04d6448))
+* An existing method `SearchFuzzedVehicles` is removed from service `VehicleService` ([5451d15](https://github.com/googleapis/nodejs-pubsub/commit/5451d150e77d46a475e7a8e150a7f6b5d04d6448))
+* An existing method `UpdateVehicleLocation` is removed from service `VehicleService` ([5451d15](https://github.com/googleapis/nodejs-pubsub/commit/5451d150e77d46a475e7a8e150a7f6b5d04d6448))
+* **deps:** Update dependency protobufjs to ~7.3.0 ([#1921](https://github.com/googleapis/nodejs-pubsub/issues/1921)) ([c5afd34](https://github.com/googleapis/nodejs-pubsub/commit/c5afd3400cc8ff9f920b4b232c4e4a5fb41eb07b))
+* Pull in new gax for protobufjs vuln fix ([#1925](https://github.com/googleapis/nodejs-pubsub/issues/1925)) ([8024c6d](https://github.com/googleapis/nodejs-pubsub/commit/8024c6d2e4ce69f97fd8b64bb9f076e33d47c662))
+
 ## [4.4.0](https://github.com/googleapis/nodejs-pubsub/compare/v4.3.3...v4.4.0) (2024-05-03)
 
 

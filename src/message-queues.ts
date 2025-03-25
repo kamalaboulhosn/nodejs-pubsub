@@ -33,13 +33,19 @@ import {
 import {Duration} from './temporal';
 import {addToBucket} from './util';
 import {DebugMessage} from './debug';
+import * as tracing from './telemetry-tracing';
+
+export interface ReducedMessage {
+  ackId: string;
+  tracingSpan?: tracing.Span;
+}
 
 /**
  * @private
  */
 export interface QueuedMessage {
-  ackId: string;
-  deadline?: number;
+  message: ReducedMessage;
+  deadline?: number; // seconds
   responsePromise?: defer.DeferredPromise<void>;
   retryCount: number;
 }
@@ -49,11 +55,19 @@ export interface QueuedMessage {
  */
 export type QueuedMessages = Array<QueuedMessage>;
 
+/**
+ * Batching options for sending acks and modacks back to the server.
+ */
 export interface BatchOptions {
   callOptions?: CallOptions;
   maxMessages?: number;
   maxMilliseconds?: number;
 }
+
+// This is the maximum number of bytes we will send for a batch of
+// ack/modack messages. The server itself has a maximum of 512KiB, so
+// we just pull back a little from that in case of unknown fenceposts.
+export const MAX_BATCH_BYTES = 510 * 1024;
 
 /**
  * Error class used to signal a batch failure.
@@ -107,6 +121,7 @@ export abstract class MessageQueue {
   numPendingRequests: number;
   numInFlightRequests: number;
   numInRetryRequests: number;
+  bytes: number;
   protected _onFlush?: defer.DeferredPromise<void>;
   protected _onDrain?: defer.DeferredPromise<void>;
   protected _options!: BatchOptions;
@@ -121,6 +136,7 @@ export abstract class MessageQueue {
     this.numPendingRequests = 0;
     this.numInFlightRequests = 0;
     this.numInRetryRequests = 0;
+    this.bytes = 0;
     this._requests = [];
     this._subscriber = sub;
     this._retrier = new ExponentialRetry<QueuedMessage>(
@@ -176,10 +192,10 @@ export abstract class MessageQueue {
    * Adds a message to the queue.
    *
    * @param {Message} message The message to add.
-   * @param {number} [deadline] The deadline.
+   * @param {number} [deadline] The deadline in seconds.
    * @private
    */
-  add({ackId}: Message, deadline?: number): Promise<void> {
+  add(message: Message, deadline?: number): Promise<void> {
     if (this._closed) {
       if (this._subscriber.isExactlyOnceDelivery) {
         throw new AckError(AckResponses.Invalid, 'Subscriber closed');
@@ -189,20 +205,34 @@ export abstract class MessageQueue {
     }
 
     const {maxMessages, maxMilliseconds} = this._options;
+    const size = Buffer.byteLength(message.ackId, 'utf8');
 
+    // If we will go over maxMessages or MAX_BATCH_BYTES by adding this
+    // message, flush first. (maxMilliseconds is handled by timers.)
+    if (
+      this._requests.length + 1 >= maxMessages! ||
+      this.bytes + size >= MAX_BATCH_BYTES
+    ) {
+      this.flush();
+    }
+
+    // Add the message to the current batch.
     const responsePromise = defer<void>();
     this._requests.push({
-      ackId,
+      message: {
+        ackId: message.ackId,
+        tracingSpan: message.parentSpan,
+      },
       deadline,
       responsePromise,
       retryCount: 0,
     });
     this.numPendingRequests++;
     this.numInFlightRequests++;
+    this.bytes += size;
 
-    if (this._requests.length >= maxMessages!) {
-      this.flush();
-    } else if (!this._timer) {
+    // Ensure that we are counting toward maxMilliseconds by timer.
+    if (!this._timer) {
       this._timer = setTimeout(() => this.flush(), maxMilliseconds!);
     }
 
@@ -264,6 +294,7 @@ export abstract class MessageQueue {
     const deferred = this._onFlush;
 
     this._requests = [];
+    this.bytes = 0;
     this.numPendingRequests -= batchSize;
     delete this._onFlush;
 
@@ -330,7 +361,10 @@ export abstract class MessageQueue {
    * @private
    */
   setOptions(options: BatchOptions): void {
-    const defaults: BatchOptions = {maxMessages: 3000, maxMilliseconds: 100};
+    const defaults: BatchOptions = {
+      maxMessages: 3000,
+      maxMilliseconds: 100,
+    };
 
     this._options = Object.assign(defaults, options);
   }
@@ -379,9 +413,9 @@ export abstract class MessageQueue {
     const codes: AckErrorCodes = processAckErrorInfo(rpcError);
 
     for (const m of batch) {
-      if (codes.has(m.ackId)) {
+      if (codes.has(m.message.ackId)) {
         // This ack has an ErrorInfo entry, so use that to route it.
-        const code = codes.get(m.ackId)!;
+        const code = codes.get(m.message.ackId)!;
         if (code.transient) {
           // Transient errors get retried.
           toRetry.push(m);
@@ -407,7 +441,7 @@ export abstract class MessageQueue {
     // stream message if an unknown error happens during ack.
     const others = toError.get(AckResponses.Other);
     if (others?.length) {
-      const otherIds = others.map(e => e.ackId);
+      const otherIds = others.map(e => e.message.ackId);
       const debugMsg = new BatchError(rpcError, otherIds, operation);
       this._subscriber.emit('debug', debugMsg);
     }
@@ -468,8 +502,13 @@ export class AckQueue extends MessageQueue {
    * @return {Promise}
    */
   protected async _sendBatch(batch: QueuedMessages): Promise<QueuedMessages> {
+    const responseSpan = tracing.PubsubSpans.createAckRpcSpan(
+      batch.map(b => b.message.tracingSpan),
+      this._subscriber.name,
+      'AckQueue._sendBatch'
+    );
     const client = await this._subscriber.getClient();
-    const ackIds = batch.map(({ackId}) => ackId);
+    const ackIds = batch.map(({message}) => message.ackId);
     const reqOpts = {subscription: this._subscriber.name, ackIds};
 
     try {
@@ -477,6 +516,7 @@ export class AckQueue extends MessageQueue {
 
       // It's okay if these pass through since they're successful anyway.
       this.handleAckSuccesses(batch);
+      responseSpan?.end();
       return [];
     } catch (e) {
       // If exactly-once delivery isn't enabled, don't do error processing. We'll
@@ -500,6 +540,7 @@ export class AckQueue extends MessageQueue {
           batch.forEach(m => {
             m.responsePromise?.reject(exc);
           });
+          responseSpan?.end();
           return [];
         }
       }
@@ -541,12 +582,22 @@ export class ModAckQueue extends MessageQueue {
     const callOptions = this.getCallOptions();
     const modAckRequests = Object.keys(modAckTable).map(async deadline => {
       const messages = modAckTable[deadline];
-      const ackIds = messages.map(m => m.ackId);
+      const ackIds = messages.map(m => m.message.ackId);
       const ackDeadlineSeconds = Number(deadline);
       const reqOpts = {subscription, ackIds, ackDeadlineSeconds};
 
+      const responseSpan = tracing.PubsubSpans.createModackRpcSpan(
+        messages.map(b => b.message.tracingSpan),
+        this._subscriber.name,
+        ackDeadlineSeconds === 0 ? 'nack' : 'modack',
+        'ModAckQueue._sendBatch',
+        Duration.from({seconds: ackDeadlineSeconds})
+      );
+
       try {
         await client.modifyAckDeadline(reqOpts, callOptions);
+
+        responseSpan?.end();
 
         // It's okay if these pass through since they're successful anyway.
         this.handleAckSuccesses(messages);
